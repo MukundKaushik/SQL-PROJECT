@@ -76,22 +76,29 @@ JOIN salaries s ON e.emp_no = s.emp_no
 JOIN departments d ON de.dept_no = d.dept_no
 GROUP BY e.gender, d.dept_name;
 
-Q11: Identify employees who have held multiple job titles.
+Q11 :Find the departments with the lowest average salary.
 
-SELECT emp_no, COUNT(DISTINCT title) AS title_count
-FROM title
-GROUP BY emp_no
-HAVING title_count > 1;
+SELECT d.dept_no, AVG(s.salary) AS avg_salary
+FROM dept_emp de
+JOIN salaries s ON de.emp_no = s.emp_no
+JOIN departments d ON de.dept_no = d.dept_no
+GROUP BY d.dept_no
+ORDER BY avg_salary ASC;
 
-Q12: Find employees who have worked in an odd number of departments.
+Q12: Identify employees who have worked under multiple managers.
 
-SELECT emp_no, COUNT(DISTINCT dept_no) AS dept_count
-FROM dept_emp
-GROUP BY emp_no
-HAVING dept_count % 2 = 1;
+SELECT e.first_name, e.last_name, COUNT(dm.emp_no) AS manager_count
+FROM employees e
+JOIN dept_emp de ON e.emp_no = de.emp_no
+JOIN dept_manager dm ON de.dept_no = dm.dept_no
+GROUP BY e.emp_no
+HAVING manager_count > 1;
 
-Q13: List employees who received an even number of salary updates.
-SELECT emp_no, COUNT(*) AS salary_updates
-FROM salaries
-GROUP BY emp_no
-HAVING salary_updates % 2 = 0;
+Q13: Find the most common job title among employees.
+SELECT t.title, COUNT(*) AS count
+FROM title t
+GROUP BY t.title
+ORDER BY count DESC
+LIMIT 1;
+
+
